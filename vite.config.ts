@@ -11,7 +11,8 @@ export default defineConfig(({ mode }) => {
       },
       plugins: [react()],
       define: {
-        'process.env.GLM_API_KEY': JSON.stringify(env.GLM_API_KEY)
+        'process.env.GLM_API_KEY': JSON.stringify(env.GLM_API_KEY),
+        'process.env.DOUBAO_API_KEY': JSON.stringify(env.DOUBAO_API_KEY)
       },
       resolve: {
         alias: {

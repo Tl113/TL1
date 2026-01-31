@@ -2,7 +2,10 @@ import { NoteData } from '../types';
 import { NOTE_FREQUENCIES, MAX_NOTES } from '../constants';
 
 const GLM_API_KEY = process.env.GLM_API_KEY || '';
+const DOUBAO_API_KEY = process.env.DOUBAO_API_KEY || '';
+
 const GLM_BASE_URL = 'https://open.bigmodel.cn/api/paas/v4';
+const DOUBAO_BASE_URL = 'https://ark.cn-beijing.volces.com/api/v3';
 
 async function glmRequest(endpoint: string, body: object) {
   const response = await fetch(`${GLM_BASE_URL}${endpoint}`, {
@@ -21,12 +24,29 @@ async function glmRequest(endpoint: string, body: object) {
   return response.json();
 }
 
+async function doubaoRequest(endpoint: string, body: object) {
+  const response = await fetch(`${DOUBAO_BASE_URL}${endpoint}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${DOUBAO_API_KEY}`
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    throw new Error(`Doubao API error: ${response.status}`);
+  }
+
+  return response.json();
+}
+
 export async function generateSilhouetteImage(prompt: string): Promise<string | null> {
   try {
-    const response = await glmRequest('/images/generations', {
-      model: 'cogview-3-plus',
+    const response = await doubaoRequest('/images/generations', {
+      model: 'doubao-seedream-4-5-251128',
       prompt: `A simple, elegant silhouette of a ${prompt}. Pure black shape on pure white background. Clean smooth edges. Artistic and recognizable. Centered. No gradients, solid black and white only.`,
-      size: '1024x1024'
+      size: '1920x1920'
     });
 
     if (response.data && response.data[0]?.url) {
